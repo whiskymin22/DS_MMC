@@ -3,31 +3,31 @@ CREATE DATABASE Testing_System_Db;
 USE Testing_System_Db;
 
 CREATE TABLE Department(
-    DepartmentID INT PRIMARY KEY,
-    DepartmentName varchar(50)
+    DepartmentID 	INT PRIMARY KEY,
+    DepartmentName 	VARCHAR(50)
 );
 
 CREATE TABLE `Position`(
-    PositionID INT PRIMARY KEY,
-    PositionName ENUM('Dev', 'Test', 'Srum Master', 'PM')
+    PositionID		 INT PRIMARY KEY,
+    PositionName 	 ENUM('Dev', 'Test', 'Srum Master', 'PM')
 );
 
 CREATE TABLE Account(
-    AccountID INT AUTO_INCREMENT PRIMARY KEY,
-    Email VARCHAR(50),
-    Username VARCHAR(50),
-	Fullname VARCHAR(50),
-    DepartmentID INT,
-    PositionID INT, 
+    AccountID 		INT AUTO_INCREMENT PRIMARY KEY,
+    Email 		VARCHAR(50),
+    Username 		VARCHAR(50),
+	Fullname 	VARCHAR(50),
+    DepartmentID 	INT,
+    PositionID 		INT, 
     FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
     FOREIGN KEY (PositionID) REFERENCES `Position`(PositionID)
 );
 
 CREATE TABLE `Group`(
-	GroupID INT AUTO_INCREMENT PRIMARY KEY,
-    GroupName VARCHAR(50),
-    CreatorID INT,
-    CreateDate DATE
+	GroupID 	INT AUTO_INCREMENT PRIMARY KEY,
+    GroupName 		VARCHAR(50),
+    CreatorID 		INT,
+    CreateDate 		DATE
 );  
 
 CREATE TABLE GroupAccount (
