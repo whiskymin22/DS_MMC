@@ -1,106 +1,106 @@
-DROP DATABASE IF EXISTS Testing_System_Db;
-CREATE DATABASE Testing_System_Db;
+	DROP DATABASE IF EXISTS Testing_System_Db;
+	CREATE DATABASE Testing_System_Db;
 
-USE Testing_System_Db;
+	USE Testing_System_Db;
 
-DROP TABLE IF EXISTS Department;
-CREATE TABLE Department(
-    DepartmentID 			TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    DepartmentName			NVARCHAR(30) NOT NULL UNIQUE KEY	
-);
+	DROP TABLE IF EXISTS Department;
+	CREATE TABLE Department(
+		DepartmentID 			TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		DepartmentName			NVARCHAR(30) NOT NULL UNIQUE KEY	
+	);
 
-DROP TABLE IF EXISTS Position;
-CREATE TABLE `Position` (
-	PositionID				TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    PositionName			ENUM('Dev','Test','Scrum Master','PM') NOT NULL UNIQUE KEY
-    );
+	DROP TABLE IF EXISTS Position;
+	CREATE TABLE `Position` (
+		PositionID				TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		PositionName			ENUM('Dev','Test','Scrum Master','PM') NOT NULL UNIQUE KEY
+		);
 
-DROP TABLE IF EXISTS Account;
-CREATE TABLE `Account`(
-    AccountID 				TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Email					VARCHAR(50) NOT NULL UNIQUE KEY,
-    Username 				VARCHAR(50) NOT NULL UNIQUE KEY,
-	Fullname 				NVARCHAR(50) NOT NULL UNIQUE KEY,
-    DepartmentID 			TINYINT UNSIGNED NOT NULL ,
-    PositionID 				TINYINT UNSIGNED NOT NULL,
-    CreateDATE				DATETIME DEFAULT NOW(),
-    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
-    FOREIGN KEY (PositionID) REFERENCES `Position`(PositionID)
-);
+	DROP TABLE IF EXISTS Account;
+	CREATE TABLE `Account`(
+		AccountID 				TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		Email					VARCHAR(50) NOT NULL UNIQUE KEY,
+		Username 				VARCHAR(50) NOT NULL UNIQUE KEY,
+		Fullname 				NVARCHAR(50) NOT NULL UNIQUE KEY,
+		DepartmentID 			TINYINT UNSIGNED NOT NULL ,
+		PositionID 				TINYINT UNSIGNED NOT NULL,
+		CreateDATE				DATETIME DEFAULT NOW(),
+		CONSTRAINT fk_department_id FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT fk_position_id FOREIGN KEY (PositionID) REFERENCES `Position`(PositionID) ON UPDATE CASCADE ON DELETE CASCADE
+	);
 
-DROP TABLE IF EXISTS `Group`;
-CREATE TABLE `Group`(
-	GroupID 				TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    GroupName 				NVARCHAR(50) NOT NULL UNIQUE KEY,
-    CreatorID 				TINYINT UNSIGNED,
-    CreateDate 				DATETIME DEFAULT NOW(),
-    FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID)
-);  
+	DROP TABLE IF EXISTS `Group`;
+	CREATE TABLE `Group`(
+		GroupID 				TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		GroupName 				NVARCHAR(50) NOT NULL UNIQUE KEY,
+		CreatorID 				TINYINT UNSIGNED,
+		CreateDate 				DATETIME DEFAULT NOW(),
+		CONSTRAINT fk_creator_id FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID) ON DELETE CASCADE ON UPDATE CASCADE
+	);  
 
-DROP TABLE IF EXISTS GroupAccount;
-CREATE TABLE GroupAccount (
-    GroupID             	TINYINT UNSIGNED NOT NULL,
-    AccountID           	TINYINT UNSIGNED NOT NULL,
-    JoinDate            	DATETIME DEFAULT NOW(),
-    PRIMARY KEY (GroupID, AccountID),
-    FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID)
-);
+	DROP TABLE IF EXISTS GroupAccount;
+	CREATE TABLE GroupAccount (
+		GroupID             	TINYINT UNSIGNED NOT NULL,
+		AccountID           	TINYINT UNSIGNED NOT NULL,
+		JoinDate            	DATETIME DEFAULT NOW(),
+		PRIMARY KEY (GroupID, AccountID),
+		CONSTRAINT fk_group_id FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID) ON DELETE CASCADE ON UPDATE CASCADE
+	);
 
-DROP TABLE IF EXISTS TypeQuestion;
-CREATE TABLE TypeQuestion (
-    TypeID              	TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    TypeName           		ENUM("Essay","Multiple-Choice") NOT NULL UNIQUE KEY
-);
+	DROP TABLE IF EXISTS TypeQuestion;
+	CREATE TABLE TypeQuestion (
+		TypeID              	TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		TypeName           		ENUM("Essay","Multiple-Choice") NOT NULL UNIQUE KEY
+	);
 
-DROP TABLE IF EXISTS CategoryQuestion;
-CREATE TABLE CategoryQuestion (
-    CategoryID              TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    CategoryName            NVARCHAR(50) NOT NULL UNIQUE KEY
-);
+	DROP TABLE IF EXISTS CategoryQuestion;
+	CREATE TABLE CategoryQuestion (
+		CategoryID              TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		CategoryName            NVARCHAR(50) NOT NULL UNIQUE KEY
+	);
 
-DROP TABLE IF EXISTS Question;
-CREATE TABLE Question (
-    QuestionID              TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Content                 NVARCHAR(100) NOT NULL ,
-    CategoryID              TINYINT UNSIGNED NOT NULL ,
-    TypeID                  TINYINT UNSIGNED NOT NULL,
-    CreatorID               TINYINT UNSIGNED NOT NULL,
-    CreateDate              DATETIME DEFAULT NOW(),
-    FOREIGN KEY (CategoryID) REFERENCES CategoryQuestion(CategoryID),
-    FOREIGN KEY (TypeID) REFERENCES TypeQuestion(TypeID),
-    FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID)
-);
+	DROP TABLE IF EXISTS Question;
+	CREATE TABLE Question (
+		QuestionID              TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		Content                 NVARCHAR(100) NOT NULL ,
+		CategoryID              TINYINT UNSIGNED NOT NULL ,
+		TypeID                  TINYINT UNSIGNED NOT NULL,
+		CreatorID               TINYINT UNSIGNED NOT NULL,
+		CreateDate              DATETIME DEFAULT NOW(),
+		CONSTRAINT fk_category_id FOREIGN KEY (CategoryID) REFERENCES CategoryQuestion(CategoryID) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT fk_type_id FOREIGN KEY (TypeID) REFERENCES TypeQuestion(TypeID) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT fk_creator_id_question FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID) ON DELETE CASCADE ON UPDATE CASCADE
+	);
 
-DROP TABLE IF EXISTS Answer;
-CREATE TABLE Answer (
-    AnswerID                TINYINT AUTO_INCREMENT PRIMARY KEY,
-    Content                 NVARCHAR(100) NOT NULL ,
-    QuestionID              TINYINT UNSIGNED NOT NULL,
-    isCorrect               BIT DEFAULT 1,
-    FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
-);
+	DROP TABLE IF EXISTS Answer;
+	CREATE TABLE Answer (
+		AnswerID                TINYINT AUTO_INCREMENT PRIMARY KEY,
+		Content                 NVARCHAR(100) NOT NULL ,
+		QuestionID              TINYINT UNSIGNED NOT NULL,
+		isCorrect               BIT DEFAULT 1,
+		CONSTRAINT fk_question_id FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID) ON DELETE CASCADE ON UPDATE CASCADE
+	);
 
-DROP TABLE IF EXISTS Exam;
-CREATE TABLE Exam (
-    ExamID                  TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `Code`                  CHAR(10) NOT NULL,
-    Title                   NVARCHAR(50) NOT NULL,
-    CategoryID              TINYINT UNSIGNED NOT NULL,	
-    Duration                TINYINT UNSIGNED NOT NULL,
-    CreatorID               TINYINT UNSIGNED NOT NULL ,
-    CreateDate              DATETIME DEFAULT NOW(),
-    FOREIGN KEY (CategoryID) REFERENCES CategoryQuestion(CategoryID),
-    FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountID)
-);
+	DROP TABLE IF EXISTS Exam;
+	CREATE TABLE Exam (
+		ExamID                  TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		`Code`                  CHAR(10) NOT NULL,
+		Title                   NVARCHAR(50) NOT NULL,
+		CategoryID              TINYINT UNSIGNED NOT NULL,	
+		Duration                TINYINT UNSIGNED NOT NULL,
+		CreatorID               TINYINT UNSIGNED NOT NULL ,
+		CreateDate              DATETIME DEFAULT NOW(),
+		CONSTRAINT fk_category_id_exam FOREIGN KEY (CategoryID) REFERENCES CategoryQuestion(CategoryID) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT fk_creator_id_exam FOREIGN KEY(CreatorID) REFERENCES `Account`(AccountID) ON DELETE CASCADE ON UPDATE CASCADE
+	);
 
-DROP TABLE IF EXISTS ExamQuestion;
-CREATE TABLE ExamQuestion (
-    ExamID                  TINYINT UNSIGNED,
-    QuestionID              TINYINT UNSIGNED,
-    FOREIGN KEY (ExamID) REFERENCES Exam(ExamID),
-    FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID),
-	PRIMARY KEY (ExamID, QuestionID)
-);
+	DROP TABLE IF EXISTS ExamQuestion;
+	CREATE TABLE ExamQuestion (
+		ExamID                  TINYINT UNSIGNED,
+		QuestionID              TINYINT UNSIGNED,
+		CONSTRAINT fk_exam_id FOREIGN KEY (ExamID) REFERENCES Exam(ExamID) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT fk_question_id_exam_question FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID) ON DELETE CASCADE ON UPDATE CASCADE,
+		PRIMARY KEY (ExamID, QuestionID)
+	);
 
 
 
