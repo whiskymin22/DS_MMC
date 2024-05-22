@@ -137,7 +137,8 @@ VALUES 				('haidang29productions@gmail.com'	, 'dangblack'		,'Nguyễn hải Đ�
                     ('songcodaoly@gmail.com'			, 'huanhoahong'		,'Bui Xuan Huan'		,   '7'			,   '2'		, NULL		),
                     ('sontungmtp@gmail.com'				, 'tungnui'			,'Nguyen Thanh Tung'	,   '8'			,   '1'		,'2020-04-07'),
                     ('duongghuu@gmail.com'				, 'duongghuu'		,'Duong Van Huu'		,   '9'			,   '2'		,'2020-04-07'),
-                    ('vtiaccademy@gmail.com'			, 'vtiaccademy'		,'Vi Ti Ai'				,   '10'		,   '1'		,'2020-04-09');
+                    ('vtiaccademy@gmail.com'			, 'vtiaccademy'		,'Vi Ti Ai'				,   '10'		,   '1'		,'2020-04-09'),
+                    ('vtiaccademy2@gmail.com'			, 'kvippro'			,'Tran Hao Nhien'		,   '3'			,   '4'		,'2020-05-09');
 
 -- Add data Group
 INSERT INTO `Group`	(  GroupName			, CreatorID		, CreateDate)
